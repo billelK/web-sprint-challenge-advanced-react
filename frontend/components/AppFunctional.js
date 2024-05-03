@@ -29,8 +29,8 @@ export default function AppFunctional(props) {
     arrs.filter((arr,idx) => {
       for (let i=0; i<arr.length; i++){
         if (index === arr[i]) {
-          x = idx + 1
-          y = i + 1
+          x = i + 1
+          y = idx + 1
         }
       }
     })
@@ -50,6 +50,8 @@ export default function AppFunctional(props) {
     // Use this helper to reset all states to their initial values.
     setIndex(4)
     setSteps(0)
+    setEmail("")
+    setMessage("")
   }
 
   function getNextIndex(direction) {
@@ -110,14 +112,18 @@ export default function AppFunctional(props) {
     let coordinates = getXY(index)
     let payload = {x: coordinates.x, y:coordinates.y, steps:steps, email:email}
     axios.post(url, payload)
-    .then (res => setMessage(res.data.message))
+    .then (res => {
+      setMessage(res.data.message)
+      setEmail("")
+    })
+    .catch (error => setMessage(JSON.parse(error.request.response).message))
   }
 
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">{`You moved ${steps} times`}</h3>
+        <h3 id="steps">{steps === 1 ? `You moved ${steps} time` :`You moved ${steps} times`}</h3>
       </div>
       <div id="grid">
         {
